@@ -1,0 +1,16 @@
+{
+  "short_name": "Custom Heardle",
+  "name": "Custom Heardle",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "type": "image/png",
+      "sizes": "1024x1024"
+    }
+  ],
+  "start_url": "https://heardle.vrtx.dev/",
+  "background_color": "#1db954",
+  "display": "standalone",
+  "theme_color": "#1db954",
+  "description": "Heardle, based on the music you actually listen to."
+}
