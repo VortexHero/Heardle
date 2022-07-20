@@ -171,7 +171,8 @@ async function playlistSelect() {
         let itemsFetch = await fetch(
           `https://api.spotify.com/v1/playlists/${playlistId}?` +
             new URLSearchParams({
-              fields: 'tracks.items(track(name, id, uri, artists(name)))',
+              fields:
+                'tracks.items(track(name,id,uri,duration_ms,artists(name)))',
             }),
           {
             headers: {
@@ -184,6 +185,7 @@ async function playlistSelect() {
           let items = await itemsFetch.json();
 
           items = items.tracks.items;
+          items = items.filter((item) => item.track.duration_ms > 16000);
 
           let track = items[Math.floor(Math.random() * items.length)];
 
@@ -223,14 +225,16 @@ async function playlistSelect() {
                 }
               );
 
-              // TODO: safeguard make sure 16 seconds
-
               if (playerTrackFetch.ok) {
                 await player.pause();
 
                 const answer = `${track.track.name} - ${track.track.artists[0].name}`;
                 let guess = 0;
                 let timeoutPlayer = null;
+
+                document
+                  .getElementById('playButton')
+                  .classList.remove('d-none');
 
                 document
                   .getElementById('playButton')
@@ -377,12 +381,12 @@ let timeout = null;
 $('#gameGuessField').autocomplete({
   orientation: 'top',
   lookup: async (query, done) => {
-    if (query !== '') {
-      if (timeout) {
-        clearTimeout(timeout);
-        done({ suggestions: [] });
-      }
+    if (timeout) {
+      clearTimeout(timeout);
+      done({ suggestions: [] });
+    }
 
+    if (query !== '') {
       timeout = setTimeout(async () => {
         await refresh();
 
@@ -419,8 +423,6 @@ $('#gameGuessField').autocomplete({
           done(dataObj);
         }
       }, 500);
-    } else {
-      done({ suggestions: [] });
     }
   },
 });
