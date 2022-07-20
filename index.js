@@ -248,6 +248,7 @@ async function playlistSelect() {
 
                     if (guess === 0) {
                       await player.resume();
+                      scrub(0);
                       timeoutPlayer = setTimeout(async () => {
                         await player.pause();
                         await player.setVolume(0);
@@ -256,6 +257,7 @@ async function playlistSelect() {
 
                     if (guess === 1) {
                       await player.resume();
+                      scrub(1);
                       timeoutPlayer = setTimeout(async () => {
                         await player.pause();
                         await player.setVolume(0);
@@ -264,6 +266,7 @@ async function playlistSelect() {
 
                     if (guess === 2) {
                       await player.resume();
+                      scrub(2);
                       timeoutPlayer = setTimeout(async () => {
                         await player.pause();
                         await player.setVolume(0);
@@ -272,6 +275,7 @@ async function playlistSelect() {
 
                     if (guess === 3) {
                       await player.resume();
+                      scrub(3);
                       timeoutPlayer = setTimeout(async () => {
                         await player.pause();
                         await player.setVolume(0);
@@ -280,6 +284,7 @@ async function playlistSelect() {
 
                     if (guess === 4) {
                       await player.resume();
+                      scrub(4);
                       timeoutPlayer = setTimeout(async () => {
                         await player.pause();
                         await player.setVolume(0);
@@ -288,6 +293,7 @@ async function playlistSelect() {
 
                     if (guess === 5) {
                       await player.resume();
+                      scrub(5);
                       timeoutPlayer = setTimeout(async () => {
                         await player.pause();
                         await player.setVolume(0);
@@ -374,6 +380,65 @@ async function playlistSelect() {
       });
     });
   }
+}
+
+var scrubber = null;
+
+function scrub(section) {
+  let time = 0;
+
+  if (scrubber) {
+    clearInterval(scrubber);
+  }
+
+  scrubber = setInterval(() => {
+    time += 10;
+    if (time <= 1000) {
+      document.getElementById('scrubberBar1').style.width = `${time / 10}%`;
+    }
+    if (time <= 2000) {
+      document.getElementById('scrubberBar2').style.width = `${
+        (time - 1000) / 10
+      }%`;
+    }
+    if (time <= 4000) {
+      document.getElementById('scrubberBar3').style.width = `${
+        (time - 2000) / 20
+      }%`;
+    }
+    if (time <= 7000) {
+      document.getElementById('scrubberBar4').style.width = `${
+        (time - 4000) / 30
+      }%`;
+    }
+    if (time <= 11000) {
+      document.getElementById('scrubberBar5').style.width = `${
+        (time - 7000) / 40
+      }%`;
+    }
+    if (time <= 16000) {
+      document.getElementById('scrubberBar6').style.width = `${
+        (time - 11000) / 50
+      }%`;
+    }
+
+    if (
+      (time === 1000 && section === 0) ||
+      (time === 2000 && section === 1) ||
+      (time === 4000 && section === 2) ||
+      (time === 7000 && section === 3) ||
+      (time === 11000 && section === 4) ||
+      (time === 16000 && section === 5)
+    ) {
+      clearInterval(scrubber);
+      document.getElementById('scrubberBar1').style.width = '0%';
+      document.getElementById('scrubberBar2').style.width = '0%';
+      document.getElementById('scrubberBar3').style.width = '0%';
+      document.getElementById('scrubberBar4').style.width = '0%';
+      document.getElementById('scrubberBar5').style.width = '0%';
+      document.getElementById('scrubberBar6').style.width = '0%';
+    }
+  }, 10);
 }
 
 let timeout = null;
