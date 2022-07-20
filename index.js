@@ -307,6 +307,19 @@ async function playlistSelect() {
                   document.getElementById('gameGuessField').value = '';
                   await player.pause();
                   await player.setVolume(0);
+
+                  if (scrubber) {
+                    clearInterval(scrubber);
+                  }
+
+                  document.getElementById('gameTimestamp').innerText = '0:00';
+                  document.getElementById('scrubberBar1').style.width = '0%';
+                  document.getElementById('scrubberBar2').style.width = '0%';
+                  document.getElementById('scrubberBar3').style.width = '0%';
+                  document.getElementById('scrubberBar4').style.width = '0%';
+                  document.getElementById('scrubberBar5').style.width = '0%';
+                  document.getElementById('scrubberBar6').style.width = '0%';
+
                   guess++;
 
                   if (guess === 1) {
@@ -391,8 +404,26 @@ function scrub(section) {
     clearInterval(scrubber);
   }
 
+  document.getElementById('gameTimestamp').innerText = '0:00';
+  document.getElementById('scrubberBar1').style.width = '0%';
+  document.getElementById('scrubberBar2').style.width = '0%';
+  document.getElementById('scrubberBar3').style.width = '0%';
+  document.getElementById('scrubberBar4').style.width = '0%';
+  document.getElementById('scrubberBar5').style.width = '0%';
+  document.getElementById('scrubberBar6').style.width = '0%';
+
   scrubber = setInterval(() => {
     time += 10;
+
+    if (time % 1000 === 0) {
+      document.getElementById('gameTimestamp').innerText = `0:${(
+        time / 1000
+      ).toLocaleString('en-US', {
+        minimumIntegerDigits: 2,
+        useGrouping: false,
+      })}`;
+    }
+
     if (time <= 1000) {
       document.getElementById('scrubberBar1').style.width = `${time / 10}%`;
     }
@@ -431,6 +462,8 @@ function scrub(section) {
       (time === 16000 && section === 5)
     ) {
       clearInterval(scrubber);
+
+      document.getElementById('gameTimestamp').innerText = '0:00';
       document.getElementById('scrubberBar1').style.width = '0%';
       document.getElementById('scrubberBar2').style.width = '0%';
       document.getElementById('scrubberBar3').style.width = '0%';
