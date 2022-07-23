@@ -30,7 +30,6 @@ body {
 .autocomplete-suggestion {
   color: #000000 !important;
   padding: 2px 5px;
-  white-space: nowrap;
   overflow: hidden;
 }
 
