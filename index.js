@@ -1,3 +1,5 @@
+// TODO: Expire in 1 hour (refresh())
+
 if (
   localStorage.getItem('access_token') &&
   localStorage.getItem('refresh_token') &&
@@ -133,12 +135,19 @@ async function refresh() {
     });
 }
 
+document.getElementById('spotifySignOut').addEventListener('click', () => {
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('refresh_token');
+  window.location.reload();
+});
+
 async function playlistSelect() {
   document.getElementById('auth').classList.add('d-none');
   document.getElementById('game').classList.add('d-none');
   document.getElementById('results').classList.add('d-none');
   document.getElementById('app').classList.remove('d-none');
   document.getElementById('playlistSelect').classList.remove('d-none');
+  document.getElementById('spotifySignOut').classList.remove('d-none');
 
   await refresh();
 
@@ -231,10 +240,6 @@ async function playlistSelect() {
                 const answer = `${track.track.name} - ${track.track.artists[0].name}`;
                 let guess = 0;
                 let timeoutPlayer = null;
-
-                document
-                  .getElementById('playButton')
-                  .classList.remove('d-none');
 
                 document
                   .getElementById('playButton')
@@ -362,13 +367,23 @@ async function playlistSelect() {
 
                     if (guess === 7) {
                       document.getElementById(
-                        'results'
+                        'resultsText'
                       ).innerText = `You lost! The answer was "${answer}"`;
                     } else {
                       document.getElementById(
-                        'results'
+                        'resultsText'
                       ).innerText = `You won! The answer was "${answer}"`;
                     }
+
+                    document.getElementById(
+                      'resultsEmbed'
+                    ).innerHTML = `<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/${track.track.id}?utm_source=generator" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>`;
+
+                    document
+                      .getElementById('playAgainButton')
+                      .addEventListener('click', () => {
+                        window.location.reload();
+                      });
                   }
                 }
 
@@ -382,6 +397,14 @@ async function playlistSelect() {
                     document.getElementById('gameGuessField').value = '';
                     attempt();
                   });
+
+                document
+                  .getElementById('gameFooterLoading')
+                  .classList.add('d-none');
+
+                document
+                  .getElementById('gameFooter')
+                  .classList.remove('d-none');
               }
             });
           };

@@ -53,9 +53,19 @@
     >
       <div class="w-100" id="header">
         <div class="d-flex flex-row w-100 align-items-center">
-          <i class="bi bi-info-circle fs-4"></i>
+          <button
+            class="plain-btn bi bi-info-circle fs-4"
+            type="button"
+            data-bs-toggle="modal"
+            data-bs-target="#infoModal"
+          ></button>
           <h1 class="flex-grow-1 my-2">Custom Heardle BETA</h1>
-          <i class="bi bi-question-circle fs-4"></i>
+          <button
+            class="plain-btn bi bi-question-circle fs-4"
+            type="button"
+            data-bs-toggle="modal"
+            data-bs-target="#helpModal"
+          ></button>
         </div>
         <hr class="mt-0" />
       </div>
@@ -106,7 +116,11 @@
                 id="guess6"
               ></div>
             </div>
-            <div class="w-100" id="gameFooter">
+            <div class="w-100" id="gameFooterLoading">
+              <div class="spinner-border spinner-border-sm" role="status"></div>
+              Loading Player...
+            </div>
+            <div class="d-none w-100" id="gameFooter">
               <div
                 class="d-flex flex-row w-100 mt-2"
                 style="height: 10px"
@@ -187,7 +201,8 @@
                   >0:00</span
                 >
                 <button
-                  class="d-none plain-btn bi bi-play-circle fs-1"
+                  class="plain-btn bi bi-play-circle fs-1"
+                  type="button"
                   id="playButton"
                 ></button>
                 <span class="text-end" style="width: 4ch">0:16</span>
@@ -220,7 +235,108 @@
               </div>
             </div>
           </div>
-          <div id="results"></div>
+          <div id="results">
+            <div id="resultsEmbed"></div>
+            <p id="resultsText"></p>
+            <button id="playAgainButton" type="button" class="btn btn-success">
+              Play Again
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="infoModal"
+      tabindex="-1"
+      aria-labelledby="infoModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="infoModalLabel">Information</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            Heardle, based on the music you actually listen to.
+            <br />
+            <br />
+            Based on
+            <a href="https://www.spotify.com/heardle/" target="_blank"
+              >Heardle</a
+            >.
+            <button
+              id="spotifySignOut"
+              type="button"
+              class="btn btn-success mx-auto d-block d-none mt-4"
+            >
+              <i class="bi bi-spotify"></i> Sign Out
+            </button>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-success"
+              data-bs-dismiss="modal"
+            >
+              Got it!
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="helpModal"
+      tabindex="-1"
+      aria-labelledby="helpModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="helpModalLabel">Help</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="d-flex align-items-center" id="gameButtons">
+              <i class="bi bi-music-note-beamed fs-4 pe-3"></i>
+              Listen to the beginning of a song and look for the appropriate
+              artist and title in the search box.
+            </div>
+            <div class="d-flex align-items-center pt-3" id="gameButtons">
+              <i class="bi bi-volume-up-fill fs-4 pe-3"></i>
+              Wrong or skipped attempts will allow you to listen to more of the
+              song.
+            </div>
+            <div class="d-flex align-items-center pt-3" id="gameButtons">
+              <i class="bi bi-hand-thumbs-up-fill fs-4 pe-3"></i>
+              Figure out the artist and title in as little tries as possible and
+              play again!
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-success"
+              data-bs-dismiss="modal"
+            >
+              Got it!
+            </button>
+          </div>
         </div>
       </div>
     </div>

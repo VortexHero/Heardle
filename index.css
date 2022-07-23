@@ -15,6 +15,11 @@ body {
   cursor: pointer;
 }
 
+.modal {
+  color: #000000 !important;
+  text-align: start !important;
+}
+
 #container {
   max-width: 500px !important;
 }
