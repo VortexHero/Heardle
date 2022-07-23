@@ -143,10 +143,8 @@ document.getElementById('spotifySignOut').addEventListener('click', () => {
 
 async function playlistSelect() {
   document.getElementById('auth').classList.add('d-none');
-  document.getElementById('game').classList.add('d-none');
-  document.getElementById('results').classList.add('d-none');
   document.getElementById('app').classList.remove('d-none');
-  document.getElementById('playlistSelect').classList.remove('d-none');
+  document.getElementById('playlistSelectLoading').classList.remove('d-none');
   document.getElementById('spotifySignOut').classList.remove('d-none');
 
   await refresh();
@@ -174,6 +172,10 @@ async function playlistSelect() {
       playlistItem.setAttribute('id', 'playlist' + playlist.id);
       playlistItem.innerText = playlist.name;
       playlistList.appendChild(playlistItem);
+
+      document.getElementById('playlistSelectLoading').classList.add('d-none');
+      document.getElementById('playlistSelect').classList.remove('d-none');
+
       playlistItem.addEventListener('click', async (event) => {
         const playlistId = event.target.id.substring(8);
 

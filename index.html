@@ -75,8 +75,16 @@
           <button id="spotifyAuth" type="button" class="btn btn-success">
             <i class="bi bi-spotify"></i> Login with Spotify
           </button>
+          <p class="pt-3">
+            <i class="bi bi-gem"></i><i> Requires Spotify Premium</i>
+          </p>
         </div>
         <div class="d-none w-100 h-100" id="app">
+          <div class="d-none w-100" id="playlistSelectLoading">
+            <p>Select a playlist:</p>
+            <div class="spinner-border spinner-border-sm" role="status"></div>
+            Loading Playlists...
+          </div>
           <div class="d-none w-100" id="playlistSelect">
             <p>Select a playlist:</p>
             <ul class="list-group mb-2 w-100" id="playlistList">
@@ -235,7 +243,7 @@
               </div>
             </div>
           </div>
-          <div id="results">
+          <div class="d-none" id="results">
             <div id="resultsEmbed"></div>
             <p id="resultsText"></p>
             <button id="playAgainButton" type="button" class="btn btn-success">
@@ -277,7 +285,7 @@
               type="button"
               class="btn btn-success mx-auto d-block d-none mt-4"
             >
-              <i class="bi bi-spotify"></i> Sign Out
+              <i class="bi bi-spotify"></i> Sign Out of Spotify
             </button>
           </div>
           <div class="modal-footer">
