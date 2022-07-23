@@ -1,5 +1,3 @@
-// TODO: Expire in 1 hour (refresh())
-
 if (
   localStorage.getItem('access_token') &&
   localStorage.getItem('refresh_token') &&
