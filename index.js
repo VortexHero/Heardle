@@ -177,6 +177,16 @@ async function playlistSelect() {
       document.getElementById('playlistSelect').classList.remove('d-none');
 
       playlistItem.addEventListener('click', async (event) => {
+        await refresh();
+
+        let refreshTimeout = setTimeout(() => {
+          document.getElementById('game').classList.add('d-none');
+          document.getElementById('results').classList.remove('d-none');
+
+          document.getElementById('resultsText').innerText =
+            'Game timed out. Please try again.';
+        }, 3600000);
+
         const playlistId = event.target.id.substring(8);
 
         let itemsFetch = await fetch(
@@ -362,6 +372,8 @@ async function playlistSelect() {
                   }
 
                   if (guess === 7 || guessField === answer) {
+                    clearTimeout(refreshTimeout);
+
                     document.getElementById('game').classList.add('d-none');
                     document
                       .getElementById('results')
@@ -380,12 +392,6 @@ async function playlistSelect() {
                     document.getElementById(
                       'resultsEmbed'
                     ).innerHTML = `<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/${track.track.id}?utm_source=generator" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>`;
-
-                    document
-                      .getElementById('playAgainButton')
-                      .addEventListener('click', () => {
-                        window.location.reload();
-                      });
                   }
                 }
 
@@ -419,6 +425,10 @@ async function playlistSelect() {
     });
   }
 }
+
+document.getElementById('playAgainButton').addEventListener('click', () => {
+  window.location.reload();
+});
 
 var scrubber = null;
 
@@ -511,8 +521,6 @@ $('#gameGuessField').autocomplete({
 
     if (query !== '') {
       timeout = setTimeout(async () => {
-        await refresh();
-
         let searchFetch = await fetch(
           'https://api.spotify.com/v1/search?' +
             new URLSearchParams({
