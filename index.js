@@ -161,7 +161,7 @@ async function playlistSelect() {
 
   if (playlistsFetch.ok) {
     let playlists = await playlistsFetch.json();
-    playlists.items.unshift({ id: 'Last', name: 'Last 50 songs' });
+    playlists.items.unshift({ id: 'Last', name: 'Last 50 Songs' });
     let playlistList = document.getElementById('playlistList');
     playlists.items.forEach((playlist) => {
       let playlistItem = document.createElement('button');
