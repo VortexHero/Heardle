@@ -66,7 +66,7 @@ document
       new URLSearchParams({
         response_type: 'code',
         client_id: '1b7c6049734a4b7e9c3c8810aa715350',
-        scope: 'streaming playlist-read-private',
+        scope: 'streaming playlist-read-private user-read-recently-played',
         redirect_uri:
           location.protocol + '//' + location.host + location.pathname,
         state: localStorage.getItem('state'),
@@ -78,11 +78,11 @@ document
   });
 
 function id(length) {
-  var result = '';
-  var characters =
+  let result = '';
+  let characters =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  var charactersLength = characters.length;
-  for (var i = 0; i < length; i++) {
+  let charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
@@ -161,6 +161,7 @@ async function playlistSelect() {
 
   if (playlistsFetch.ok) {
     let playlists = await playlistsFetch.json();
+    playlists.items.unshift({ id: 'Last', name: 'Last 50 songs' });
     let playlistList = document.getElementById('playlistList');
     playlists.items.forEach((playlist) => {
       let playlistItem = document.createElement('button');
@@ -186,37 +187,69 @@ async function playlistSelect() {
         }, 3600000);
 
         const playlistId = event.target.id.substring(8);
-        let next =
-          `https://api.spotify.com/v1/playlists/${playlistId}?` +
-          new URLSearchParams({
-            fields:
-              'tracks(next,items(track(name,id,uri,duration_ms,artists(name))))',
-          });
+
         let items = [];
         let itemsFetch = null;
 
-        while (next) {
-          itemsFetch = await fetch(next, {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-            },
-          });
+        if (playlistId === 'Last') {
+          let next =
+            `https://api.spotify.com/v1/me/player/recently-played?` +
+            new URLSearchParams({
+              limit: 50,
+            });
 
-          next = null;
+          for (let i = 0; i < 10 && next !== null; i++) {
+            itemsFetch = await fetch(next, {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+              },
+            });
 
-          if (itemsFetch.ok) {
-            let itemsTemp = await itemsFetch.json();
-            if (itemsTemp.tracks) {
-              itemsTemp = itemsTemp.tracks;
+            next = null;
+
+            if (itemsFetch.ok) {
+              let itemsTemp = await itemsFetch.json();
+
+              next = itemsTemp.next;
+
+              itemsTemp = itemsTemp.items;
+
+              items.push(
+                ...itemsTemp.filter((item) => item.track.duration_ms > 16000)
+              );
             }
+          }
+        } else {
+          let next =
+            `https://api.spotify.com/v1/playlists/${playlistId}?` +
+            new URLSearchParams({
+              fields:
+                'tracks(next,items(track(name,id,uri,duration_ms,artists(name))))',
+            });
 
-            next = itemsTemp.next;
+          while (next) {
+            itemsFetch = await fetch(next, {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+              },
+            });
 
-            itemsTemp = itemsTemp.items;
+            next = null;
 
-            items.push(
-              ...itemsTemp.filter((item) => item.track.duration_ms > 16000)
-            );
+            if (itemsFetch.ok) {
+              let itemsTemp = await itemsFetch.json();
+              if (itemsTemp.tracks) {
+                itemsTemp = itemsTemp.tracks;
+              }
+
+              next = itemsTemp.next;
+
+              itemsTemp = itemsTemp.items;
+
+              items.push(
+                ...itemsTemp.filter((item) => item.track.duration_ms > 16000)
+              );
+            }
           }
         }
 
@@ -449,7 +482,7 @@ document.getElementById('playAgainButton').addEventListener('click', () => {
   window.location.reload();
 });
 
-var scrubber = null;
+let scrubber = null;
 
 function scrub(section) {
   let time = 0;
