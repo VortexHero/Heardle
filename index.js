@@ -186,26 +186,41 @@ async function playlistSelect() {
         }, 3600000);
 
         const playlistId = event.target.id.substring(8);
-
-        let itemsFetch = await fetch(
+        let next =
           `https://api.spotify.com/v1/playlists/${playlistId}?` +
-            new URLSearchParams({
-              fields:
-                'tracks.items(track(name,id,uri,duration_ms,artists(name)))',
-            }),
-          {
+          new URLSearchParams({
+            fields:
+              'tracks(next,items(track(name,id,uri,duration_ms,artists(name))))',
+          });
+        let items = [];
+        let itemsFetch = null;
+
+        while (next) {
+          itemsFetch = await fetch(next, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem('access_token')}`,
             },
+          });
+
+          next = null;
+
+          if (itemsFetch.ok) {
+            let itemsTemp = await itemsFetch.json();
+            if (itemsTemp.tracks) {
+              itemsTemp = itemsTemp.tracks;
+            }
+
+            next = itemsTemp.next;
+
+            itemsTemp = itemsTemp.items;
+
+            items.push(
+              ...itemsTemp.filter((item) => item.track.duration_ms > 16000)
+            );
           }
-        );
+        }
 
-        if (itemsFetch.ok) {
-          let items = await itemsFetch.json();
-
-          items = items.tracks.items;
-          items = items.filter((item) => item.track.duration_ms > 16000);
-
+        if (itemsFetch.ok && items.length > 0) {
           let track = items[Math.floor(Math.random() * items.length)];
 
           let tag = document.createElement('script');
@@ -418,6 +433,12 @@ async function playlistSelect() {
           document.getElementById('gameSkipButton').innerText = 'Skip (+1s)';
           document.getElementById('playlistSelect').classList.add('d-none');
           document.getElementById('game').classList.remove('d-none');
+        } else {
+          document.getElementById('playlistSelect').classList.add('d-none');
+          document.getElementById('results').classList.remove('d-none');
+
+          document.getElementById('resultsText').innerText =
+            'Empty playlist! Please select a playlist with at least one track over 16 seconds.';
         }
       });
     });
