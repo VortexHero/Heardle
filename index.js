@@ -186,6 +186,10 @@ async function playlistSelect() {
             'Game timed out. Please try again.';
         }, 3600000);
 
+        document.getElementById('gameSkipButton').innerText = 'Skip (+1s)';
+        document.getElementById('playlistSelect').classList.add('d-none');
+        document.getElementById('game').classList.remove('d-none');
+
         const playlistId = event.target.id.substring(8);
 
         let items = [];
@@ -462,10 +466,6 @@ async function playlistSelect() {
               }
             });
           };
-
-          document.getElementById('gameSkipButton').innerText = 'Skip (+1s)';
-          document.getElementById('playlistSelect').classList.add('d-none');
-          document.getElementById('game').classList.remove('d-none');
         } else {
           document.getElementById('playlistSelect').classList.add('d-none');
           document.getElementById('results').classList.remove('d-none');
