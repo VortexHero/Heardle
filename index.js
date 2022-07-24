@@ -66,7 +66,8 @@ document
       new URLSearchParams({
         response_type: 'code',
         client_id: '1b7c6049734a4b7e9c3c8810aa715350',
-        scope: 'streaming playlist-read-private user-read-recently-played',
+        scope:
+          'streaming playlist-read-private playlist-read-collaborative user-read-recently-played',
         redirect_uri:
           location.protocol + '//' + location.host + location.pathname,
         state: localStorage.getItem('state'),
