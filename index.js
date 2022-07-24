@@ -176,6 +176,10 @@ async function playlistSelect() {
       document.getElementById('playlistSelect').classList.remove('d-none');
 
       playlistItem.addEventListener('click', async (event) => {
+        document.getElementById('gameSkipButton').innerText = 'Skip (+1s)';
+        document.getElementById('playlistSelect').classList.add('d-none');
+        document.getElementById('game').classList.remove('d-none');
+
         await refresh();
 
         let refreshTimeout = setTimeout(() => {
@@ -185,10 +189,6 @@ async function playlistSelect() {
           document.getElementById('resultsText').innerText =
             'Game timed out. Please try again.';
         }, 3600000);
-
-        document.getElementById('gameSkipButton').innerText = 'Skip (+1s)';
-        document.getElementById('playlistSelect').classList.add('d-none');
-        document.getElementById('game').classList.remove('d-none');
 
         const playlistId = event.target.id.substring(8);
 
