@@ -467,7 +467,7 @@ async function playlistSelect() {
             });
           };
         } else {
-          document.getElementById('playlistSelect').classList.add('d-none');
+          document.getElementById('game').classList.add('d-none');
           document.getElementById('results').classList.remove('d-none');
 
           document.getElementById('resultsText').innerText =
