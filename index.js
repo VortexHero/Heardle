@@ -67,7 +67,7 @@ document
         response_type: 'code',
         client_id: '1b7c6049734a4b7e9c3c8810aa715350',
         scope:
-          'streaming playlist-read-private playlist-read-collaborative user-read-recently-played',
+          'streaming playlist-read-private playlist-read-collaborative user-top-read user-read-recently-played',
         redirect_uri:
           location.protocol + '//' + location.host + location.pathname,
         state: localStorage.getItem('state'),
@@ -163,6 +163,19 @@ async function playlistSelect() {
   if (playlistsFetch.ok) {
     let playlists = await playlistsFetch.json();
     playlists.items.unshift({ id: 'Last', name: 'Last 50 Songs' });
+    playlists.items.unshift({
+      id: 'TopShort',
+      name: 'Top 50 Songs (~Last Month)',
+    });
+    playlists.items.unshift({
+      id: 'TopMedium',
+      name: 'Top 50 Songs (~Last 6 Months)',
+    });
+    playlists.items.unshift({
+      id: 'TopLong',
+      name: 'Top 50 Songs (~Lifetime)',
+    });
+    let dynamicList = document.getElementById('dynamicList');
     let playlistList = document.getElementById('playlistList');
     playlists.items.forEach((playlist) => {
       let playlistItem = document.createElement('button');
@@ -171,7 +184,17 @@ async function playlistSelect() {
       playlistItem.setAttribute('type', 'button');
       playlistItem.setAttribute('id', 'playlist' + playlist.id);
       playlistItem.innerText = playlist.name;
-      playlistList.appendChild(playlistItem);
+
+      if (
+        playlist.id === 'TopLong' ||
+        playlist.id === 'TopMedium' ||
+        playlist.id === 'TopShort' ||
+        playlist.id === 'Last'
+      ) {
+        dynamicList.appendChild(playlistItem);
+      } else {
+        playlistList.appendChild(playlistItem);
+      }
 
       document.getElementById('playlistSelectLoading').classList.add('d-none');
       document.getElementById('playlistSelect').classList.remove('d-none');
@@ -222,6 +245,46 @@ async function playlistSelect() {
               items.push(
                 ...itemsTemp.filter((item) => item.track.duration_ms > 16000)
               );
+            }
+          }
+        } else if (
+          playlistId === 'TopLong' ||
+          playlistId === 'TopMedium' ||
+          playlistId === 'TopShort'
+        ) {
+          let next =
+            `https://api.spotify.com/v1/me/top/tracks?` +
+            new URLSearchParams({
+              time_range:
+                playlistId === 'TopLong'
+                  ? 'long_term'
+                  : playlistId === 'TopMedium'
+                  ? 'medium_term'
+                  : 'short_term',
+              limit: 50,
+            });
+
+          for (let i = 0; i < 10 && next !== null; i++) {
+            itemsFetch = await fetch(next, {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+              },
+            });
+
+            next = null;
+
+            if (itemsFetch.ok) {
+              let itemsTemp = await itemsFetch.json();
+
+              next = itemsTemp.next;
+
+              itemsTemp = itemsTemp.items;
+
+              itemsTemp
+                .filter((item) => item.duration_ms > 16000)
+                .forEach((item) => {
+                  items.push({ track: item });
+                });
             }
           }
         } else {
